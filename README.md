@@ -2,6 +2,8 @@
 
 Remote PC power controller based on ESP32-C3 Super Mini with a web interface, HTTP API, Wi-Fi setup portal, and PC status monitoring.
 
+<img width="790" height="588" alt="1785780149" src="https://github.com/user-attachments/assets/5314d70d-1091-473a-984d-5989ded0ab21" />
+
 ## Features
 
 * Turn the PC on remotely
@@ -53,9 +55,13 @@ Password: password123
 
 Connect your phone or computer to this network.
 
+<img width="360" height="402" alt="1784270205" src="https://github.com/user-attachments/assets/a3b72581-a1ec-40fb-9c9b-77ede615738b" />
+
 ### 3. Open the Settings Page
 
 If the captive portal does not open automatically, go to [http://192.168.4.1](http://192.168.4.1)
+
+<img width="923" height="687" alt="1785780020" src="https://github.com/user-attachments/assets/8deb12a5-a269-4661-9b7a-32bc894536b6" />
 
 Enter the following information:
 
@@ -101,6 +107,9 @@ Connect the ESP32 to the motherboard power button header using a female-to-male 
 
 * Connect the male end to the motherboard `POWER+` pin
 * Connect the female end to ESP32 `GPIO2`
+
+<img width="3000" height="4000" alt="20260804_203843" src="https://github.com/user-attachments/assets/a91fe683-0197-44bd-a780-f3d48989df3d" />
+<img width="4000" height="3000" alt="20260716_192339" src="https://github.com/user-attachments/assets/8d073d5e-0d0f-4c52-a98b-f6dbb2fe3b62" />
 
 Power the ESP32 through its USB Type-C port.
 
