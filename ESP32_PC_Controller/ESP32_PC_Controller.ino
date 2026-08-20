@@ -643,6 +643,25 @@ const char *html_config = R"rawliteral(
                         body: new FormData(event.target)
                     })
                     button.textContent = "Saved. Restarting..."
+
+                    const mainPageUrl = new URL("/", window.location.origin);
+                    setTimeout(async () => {
+                      while (true) {
+                        try {
+                          const response = await fetch(mainPageUrl, {
+                            cache: "no-store"
+                          })
+
+                          if (response.ok) {
+                            window.location.href = mainPageUrl
+                            return
+                          }
+                        } catch (e) {
+                        }
+
+                        await new Promise(resolve => setTimeout(resolve, 1000))
+                      }
+                    }, 2000)
                 } catch (error) {
                     button.disabled = false
                     button.textContent = "Save and restart"
@@ -965,7 +984,7 @@ void HandleWiFi()
       WiFi.mode(WIFI_STA);
 
       ApMode = false;
-      
+
       Serial.printf("IP address: %s | http://%s:%d\n", WiFi.localIP().toString().c_str(), WiFi.localIP().toString().c_str(), WEB_PORT);
     }
     return;
