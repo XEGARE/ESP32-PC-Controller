@@ -687,24 +687,34 @@ void clearConfig()
 
 void startAPMode()
 {
+  if(ApMode) return;
+
   Serial.println("Starting AP mode...");
 
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(AP_SSID, AP_PASSWORD);
+  WiFi.mode(WIFI_AP_STA);
 
-  Serial.printf("AP SSID: %s\n", AP_SSID);
-  Serial.printf("AP IP address: %s\n", WiFi.softAPIP().toString().c_str());
-  Serial.println("Captive portal should now be accessible");
+  if(WiFi.softAP(AP_SSID, AP_PASSWORD))
+  {
+    Serial.printf("AP SSID: %s\n", AP_SSID);
+    Serial.printf("AP IP address: %s\n", WiFi.softAPIP().toString().c_str());
+    Serial.println("Captive portal should now be accessible");
 
-  DnsServerInstance.start(DNS_PORT, "*", WiFi.softAPIP());
+    DnsServerInstance.start(DNS_PORT, "*", WiFi.softAPIP());
 
-  ApMode = true;
+    ApMode = true;
+  }
+  else
+  {
+    Serial.println("Failed to start AP!");
+  }
 }
 
 void connectToWiFi()
 {
   Serial.printf("Connecting to WiFi: %s\n", config.wifi_ssid);
 
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
   WiFi.begin(config.wifi_ssid, config.wifi_password);
 
   int attempts = 0;
@@ -723,8 +733,7 @@ void connectToWiFi()
   }
   else
   {
-    Serial.println("\nWiFi connection failed, starting AP mode");
-    startAPMode();
+    Serial.println("\nWiFi connection failed!");
     digitalWrite(STATUS_LED_PIN, LOW);
   }
 }
@@ -778,6 +787,13 @@ bool GetStateBoolean(PowerState state)
   default:
     return false;
   }
+}
+
+String GetWiFiStateString()
+{
+  if(WiFi.status() == WL_CONNECTED) return "Connected";
+  if(ApMode) return "AP Mode";
+  return "unknown";
 }
 
 void PressPowerButton()
@@ -930,6 +946,53 @@ bool PingPC()
   return Ping.ping(targetIP);
 }
 
+void HandleWiFi()
+{
+  static unsigned long disconnectedSince = 0;
+  static unsigned long lastReconnectAttempt = 0;
+
+  if(WiFi.status() == WL_CONNECTED)
+  {
+    disconnectedSince = 0;
+
+    if(ApMode && config.configured)
+    {
+      Serial.println("Main WiFi restored!");
+
+      DnsServerInstance.stop();
+
+      WiFi.softAPdisconnect(false);
+      WiFi.mode(WIFI_STA);
+
+      ApMode = false;
+      
+      Serial.printf("IP address: %s | http://%s:%d\n", WiFi.localIP().toString().c_str(), WiFi.localIP().toString().c_str(), WEB_PORT);
+    }
+    return;
+  }
+
+  if(disconnectedSince == 0)
+  {
+    disconnectedSince = millis();
+    Serial.println("WiFi connection lost!");
+  }
+
+  if(config.configured && millis() - lastReconnectAttempt >= 5000)
+  {
+    Serial.println("Trying WiFi reconnect...");
+
+    WiFi.reconnect();
+
+    lastReconnectAttempt = millis();
+  }
+
+  if(!ApMode && millis() - disconnectedSince >= 30000)
+  {
+    Serial.println("WiFi unavailable for 30 sec -> starting AP");
+    startAPMode();
+  }
+}
+
 void PowerStateHandler(void *pvParameters)
 {
   while(true)
@@ -941,7 +1004,7 @@ void PowerStateHandler(void *pvParameters)
         LastPingResult = PingPC();
         LastPingCheck = millis();
 
-        Serial.printf("Ping result: %s, Current State: %s, WiFi: %s\n", LastPingResult ? "SUCCESS" : "FAILED", GetStateString(CurrentState).c_str(), WiFi.status() == WL_CONNECTED ? "Connected" : "AP Mode");
+        Serial.printf("Ping result: %s, Current State: %s, WiFi: %s\n", LastPingResult ? "SUCCESS" : "FAILED", GetStateString(CurrentState).c_str(), GetWiFiStateString());
       }
 
       PowerState newState = CurrentState;
@@ -1044,6 +1107,8 @@ void setup()
 
 void loop()
 {
+  HandleWiFi();
+
   static unsigned long lastBlink = 0;
   if(millis() - lastBlink > 1000)
   {
