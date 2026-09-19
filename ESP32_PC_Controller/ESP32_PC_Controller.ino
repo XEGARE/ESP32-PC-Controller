@@ -82,16 +82,24 @@ const char *html_index = R"rawliteral(
             padding: 0;
         }
 
+        button,
+        input {
+            font: inherit;
+        }
+
         body {
             min-height: 100vh;
             display: grid;
             place-items: center;
             padding: 24px;
             font-family:
-                Inter,
-                Segoe UI,
-                Arial,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
                 sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
             color: var(--text);
             background: radial-gradient(
                 circle at top,
@@ -139,7 +147,9 @@ const char *html_index = R"rawliteral(
 
         h1 {
             font-size: clamp(22px, 5vw, 30px);
-            letter-spacing: -0.04em;
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
         }
 
         .subtitle {
@@ -165,13 +175,16 @@ const char *html_index = R"rawliteral(
             color: var(--muted);
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.08em;
         }
 
         .status-copy strong {
             display: block;
             margin-top: 5px;
             font-size: 22px;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.015em;
         }
 
         .indicator {
@@ -214,7 +227,7 @@ const char *html_index = R"rawliteral(
             color: #fff;
             background: #27344a;
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
         }
@@ -422,16 +435,24 @@ const char *html_config = R"rawliteral(
             padding: 0;
         }
 
+        button,
+        input {
+            font: inherit;
+        }
+
         body {
             min-height: 100vh;
             display: grid;
             place-items: center;
             padding: 24px;
             font-family:
-                Inter,
-                Segoe UI,
-                Arial,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
                 sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
             color: var(--text);
             background: radial-gradient(
                 circle at top,
@@ -454,7 +475,10 @@ const char *html_config = R"rawliteral(
         }
 
         h1 {
-            font-size: 28px;
+            font-size: clamp(22px, 5vw, 28px);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
         }
 
         .subtitle {
@@ -471,7 +495,7 @@ const char *html_config = R"rawliteral(
             margin-bottom: 8px;
             color: #c7d0df;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         input {
@@ -521,7 +545,7 @@ const char *html_config = R"rawliteral(
             background: linear-gradient(135deg, var(--accent), #4be1ff);
             color: #001018;
             font-size: 15px;
-            font-weight: 800;
+            font-weight: 600;
             cursor: pointer;
         }
 
