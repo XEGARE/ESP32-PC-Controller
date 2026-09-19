@@ -254,6 +254,51 @@ const char *html_index = R"rawliteral(
             color: #ffb8c2;
         }
 
+        .confirmation {
+            margin: auto;
+            width: min(440px, calc(100% - 32px));
+            max-height: calc(100% - 32px);
+            overflow: auto;
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            color: var(--text);
+            background: linear-gradient(145deg, #182235, #0d131e);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+        }
+
+        .confirmation::backdrop {
+            background: rgba(3, 7, 13, 0.75);
+            backdrop-filter: blur(5px);
+        }
+
+        .confirmation h2 {
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.025em;
+        }
+
+        .confirmation p {
+            margin: 12px 0 24px;
+            color: var(--muted);
+        }
+
+        .confirmation-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .confirmation-actions .button {
+            flex: 1 1 140px;
+        }
+
+        .button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+        }
+
         .footer {
             display: flex;
             justify-content: space-between;
@@ -344,9 +389,9 @@ const char *html_index = R"rawliteral(
             </button>
             <button
                 class="button"
-                onclick="SendCommand(this, '/off', 'Shutting down...')"
+                onclick="Shutdown(this)"
             >
-                Shutdown
+                Shut down
             </button>
             <button class="button danger" onclick="ForceOff(this)">
                 Force power off
@@ -363,6 +408,15 @@ const char *html_index = R"rawliteral(
             >
         </div>
     </main>
+    <dialog id="confirmDialog" class="confirmation"
+        aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+        <h2 id="confirmTitle"></h2>
+        <p id="confirmMessage"></p>
+        <div class="confirmation-actions">
+            <button id="cancelAction" class="button" type="button" autofocus>Cancel</button>
+            <button id="confirmAction" class="button" type="button"></button>
+        </div>
+    </dialog>
     <script>
         async function UpdateStatus() {
             try {
@@ -396,13 +450,55 @@ const char *html_index = R"rawliteral(
                 }, 1200)
             }
         }
+        const confirmDialog = document.getElementById("confirmDialog")
+        const confirmAction = document.getElementById("confirmAction")
+        let pendingCommand = null
+
+        function OpenConfirmation(button, url, pendingText, title, message, actionText, danger) {
+            if(confirmDialog.open || button.disabled) return
+            pendingCommand = { button, url, pendingText }
+            document.getElementById("confirmTitle").textContent = title
+            document.getElementById("confirmMessage").textContent = message
+            confirmAction.textContent = actionText
+            confirmAction.className = danger ? "button danger" : "button primary"
+            confirmDialog.showModal()
+            document.getElementById("cancelAction").focus()
+        }
+
+        function CancelConfirmation() {
+            pendingCommand = null
+            confirmDialog.close()
+        }
+
+        document.getElementById("cancelAction").addEventListener("click", CancelConfirmation)
+        confirmDialog.addEventListener("cancel", (event) => {
+            event.preventDefault()
+            CancelConfirmation()
+        })
+        confirmDialog.addEventListener("click", (event) => {
+            const bounds = confirmDialog.getBoundingClientRect()
+            if(event.target === confirmDialog &&
+                (event.clientX < bounds.left || event.clientX > bounds.right ||
+                 event.clientY < bounds.top || event.clientY > bounds.bottom)) {
+                CancelConfirmation()
+            }
+        })
+        confirmAction.addEventListener("click", () => {
+            const command = pendingCommand
+            pendingCommand = null
+            confirmDialog.close()
+            if(command) SendCommand(command.button, command.url, command.pendingText)
+        })
+
+        function Shutdown(button) {
+            OpenConfirmation(button, "/off", "Shutting down...",
+                "Shut down the PC?", "Save your work before shutting down the computer.",
+                "Shut down", false)
+        }
         function ForceOff(button) {
-            if(
-                confirm(
-                    "Force power off the computer? Unsaved data may be lost.",
-                )
-            )
-                SendCommand(button, "/forceoff", "Holding power button...")
+            OpenConfirmation(button, "/forceoff", "Holding power button...",
+                "Force power off?", "The computer will be forced to turn off. Unsaved data may be lost.",
+                "Force power off", true)
         }
         setInterval(UpdateStatus, 2000)
         UpdateStatus()
