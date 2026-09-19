@@ -2,7 +2,7 @@
 
 Remote PC power controller based on ESP32-C3 Super Mini with a web interface, HTTP API, Wi-Fi setup portal, and PC status monitoring.
 
-<img width="790" height="588" alt="1785780149" src="https://github.com/user-attachments/assets/5314d70d-1091-473a-984d-5989ded0ab21" />
+<img width="763" height="553" alt="1789848547" src="https://github.com/user-attachments/assets/d256c643-2d91-406c-ab39-74c4bb2e8dda" />
 
 ## Features
 
@@ -61,7 +61,7 @@ Connect your phone or computer to this network.
 
 If the captive portal does not open automatically, go to [http://192.168.4.1](http://192.168.4.1)
 
-<img width="923" height="687" alt="1785780020" src="https://github.com/user-attachments/assets/8deb12a5-a269-4661-9b7a-32bc894536b6" />
+<img width="829" height="636" alt="1789848654" src="https://github.com/user-attachments/assets/e858100c-4405-4462-870f-193292434c9e" />
 
 Enter the following information:
 
