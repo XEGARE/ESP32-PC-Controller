@@ -3,6 +3,7 @@
 #include <DNSServer.h>
 #include <EEPROM.h>
 #include <ESPping.h>
+#include <atomic>
 
 // Pin definitions
 #define POWER_SWITCH_PIN 2 // GPIO2 - connects to PC power switch (pull LOW to start)
@@ -21,6 +22,9 @@
 #define FORCE_OFF_TIME 5000
 #define PING_INTERVAL 5000
 #define TRANSITION_TIMEOUT 60000
+#define LED_FAST_BLINK_MS 100
+#define LED_BLINK_COUNT 5
+#define LED_PAUSE_MS 1000
 
 enum PowerState
 {
@@ -46,7 +50,7 @@ PowerState CurrentState = PC_OFF;
 unsigned long LastPingCheck = 0;
 unsigned long LastStartRequest = 0;
 unsigned long LastShutdownRequest = 0;
-bool LastPingResult = false;
+std::atomic<bool> LastPingResult{false};
 bool ApMode = false;
 
 // HTML pages
@@ -193,6 +197,7 @@ const char *html_index = R"rawliteral(
         .status.on .indicator {
             background: var(--green);
             box-shadow: 0 0 0 7px rgba(38, 217, 128, 0.12);
+            animation: breathe 2.4s ease-in-out infinite;
         }
 
         .controls {
@@ -265,6 +270,19 @@ const char *html_index = R"rawliteral(
             50% {
                 transform: scale(0.75);
                 opacity: 0.55;
+            }
+        }
+
+        @keyframes breathe {
+            0%, 100% {
+                transform: scale(0.85);
+                opacity: 0.6;
+                box-shadow: 0 0 0 4px rgba(38, 217, 128, 0.06);
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+                box-shadow: 0 0 0 9px rgba(38, 217, 128, 0.18);
             }
         }
 
@@ -678,6 +696,41 @@ void BlinkStatusLED()
   static bool ledState = false;
   ledState = !ledState;
   digitalWrite(STATUS_LED_PIN, ledState);
+}
+
+void HandleStatusLED()
+{
+  static unsigned long cycleStarted = 0;
+  static int previousMode = -1;
+  const unsigned long now = millis();
+
+  const int mode = WiFi.status() != WL_CONNECTED ? 0 : (LastPingResult ? 1 : 2);
+
+  if(mode != previousMode)
+  {
+    cycleStarted = now;
+    previousMode = mode;
+  }
+
+  if(mode == 0)
+  {
+    digitalWrite(STATUS_LED_PIN, LOW);
+    return;
+  }
+
+  const unsigned long elapsed = now - cycleStarted;
+  bool ledOn;
+  if(mode == 1)
+  {
+    ledOn = (elapsed % 2000) < 1000;
+  }
+  else
+  {
+    const unsigned long burstDuration = (LED_BLINK_COUNT * 2 - 1) * LED_FAST_BLINK_MS;
+    const unsigned long phase = elapsed % (burstDuration + LED_PAUSE_MS);
+    ledOn = phase < burstDuration && (phase / LED_FAST_BLINK_MS) % 2 == 0;
+  }
+  digitalWrite(STATUS_LED_PIN, ledOn ? LOW : HIGH);
 }
 
 void saveConfig()
@@ -1128,12 +1181,7 @@ void loop()
 {
   HandleWiFi();
 
-  static unsigned long lastBlink = 0;
-  if(millis() - lastBlink > 1000)
-  {
-    if(WiFi.status() == WL_CONNECTED) BlinkStatusLED();
-    lastBlink = millis();
-  }
+  HandleStatusLED();
 
   delay(10);
 }

@@ -232,8 +232,9 @@ The built-in LED connected to `GPIO8` indicates the current network state.
 
 | LED behavior           | Status                                                |
 | ---------------------- | ----------------------------------------------------- |
-| Continuously on        | Setup access point is active                          |
-| Blinks once per second | Connected to the configured Wi-Fi network             |
+| Continuously on        | Wi-Fi disconnected or setup access point is active    |
+| Toggles every second   | Wi-Fi connected and PC responds to ping               |
+| Five quick flashes, then 1 second off | Wi-Fi connected, but PC does not respond to ping |
 | Blinks quickly         | Attempting to connect to the configured Wi-Fi network |
 
 When the ESP32 cannot connect to the configured Wi-Fi network, it will continue trying for up to three minutes.
