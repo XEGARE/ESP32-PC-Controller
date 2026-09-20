@@ -1,5 +1,7 @@
 # ESP32 PC Controller
 
+English | [Русский](README_RU.md)
+
 Remote PC power controller based on ESP32-C3 Super Mini with a web interface, HTTP API, Wi-Fi setup portal, and PC status monitoring.
 
 <img width="763" height="553" alt="1789848547" src="https://github.com/user-attachments/assets/d256c643-2d91-406c-ab39-74c4bb2e8dda" />
