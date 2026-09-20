@@ -307,7 +307,39 @@ const char *html_index = R"rawliteral(
             outline-offset: 4px;
         }
 
+        .language-switch {
+            display: inline-flex;
+            gap: 2px;
+            padding: 3px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .language-switch button {
+            border: 0;
+            border-radius: 7px;
+            padding: 6px 9px;
+            background: transparent;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .language-switch button[aria-pressed="true"] {
+            background: #27344a;
+            color: var(--text);
+        }
+
+        .language-switch button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
         .footer {
+            flex-wrap: wrap;
+            gap: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -365,9 +397,6 @@ const char *html_index = R"rawliteral(
                 grid-column: auto;
             }
 
-            .footer {
-                align-items: flex-end;
-            }
         }
     </style>
 </head>
@@ -378,7 +407,7 @@ const char *html_index = R"rawliteral(
             <a class="logo"
                 href="https://github.com/XEGARE/ESP32-PC-Controller"
                 target="_blank" rel="noopener noreferrer"
-                aria-label="View project on GitHub (opens in a new tab)">
+                data-i18n-aria="github" aria-label="View project on GitHub (opens in a new tab)">
                 <svg aria-hidden="true" focusable="false" width="32" height="32"
                     viewBox="0 0 32 32" fill="none" stroke="currentColor"
                     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -392,41 +421,45 @@ const char *html_index = R"rawliteral(
             </a>
             <div>
                 <h1>ESP32 PC Controller</h1>
-                <div class="subtitle">Remote power control</div>
+                <div class="subtitle" data-i18n="subtitle">Remote power control</div>
             </div>
         </div>
         <section id="status" class="status off">
             <div class="status-copy">
-                <span>Computer status</span
-                ><strong id="statusText">Checking...</strong>
+                <span data-i18n="computerStatus">Computer status</span
+                ><strong id="statusText" data-i18n="checking">Checking...</strong>
             </div>
             <div class="indicator"></div>
         </section>
         <div class="controls">
             <button
                 class="button primary"
-                onclick="SendCommand(this, '/on', 'Starting...')"
-            >
+                onclick="SendCommand(this, '/on', 'starting')"
+             data-i18n="start">
                 Start PC
             </button>
             <button
                 class="button"
                 onclick="Shutdown(this)"
-            >
+             data-i18n="shutdown">
                 Shut down
             </button>
-            <button class="button danger" onclick="ForceOff(this)">
+            <button class="button danger" onclick="ForceOff(this)" data-i18n="forceOff">
                 Force power off
             </button>
         </div>
         <div class="footer">
-            <a href="/settings">Settings</a
+            <div class="language-switch" role="group" aria-label="Language" data-i18n-aria="language">
+                <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="true">EN</button>
+                <button type="button" data-language="ru" lang="ru" aria-label="Русский" aria-pressed="false">RU</button>
+            </div>
+            <a href="/settings" data-i18n="settings">Settings</a
             ><a
                 class="author"
                 href="https://xegare.com"
                 target="_blank"
                 rel="noopener"
-                >by XEGARE</a
+                 data-i18n="author">by XEGARE</a
             >
         </div>
     </main>
@@ -435,11 +468,100 @@ const char *html_index = R"rawliteral(
         <h2 id="confirmTitle"></h2>
         <p id="confirmMessage"></p>
         <div class="confirmation-actions">
-            <button id="cancelAction" class="button" type="button" autofocus>Cancel</button>
+            <button id="cancelAction" class="button" type="button" autofocus data-i18n="cancel">Cancel</button>
             <button id="confirmAction" class="button" type="button"></button>
         </div>
     </dialog>
     <script>
+        const translations = {
+            "en": {
+                "language": "Language",
+                "author": "by XEGARE",
+                "subtitle": "Remote power control",
+                "computerStatus": "Computer status",
+                "checking": "Checking...",
+                "start": "Start PC",
+                "shutdown": "Shut down",
+                "forceOff": "Force power off",
+                "settings": "Settings",
+                "cancel": "Cancel",
+                "starting": "Starting...",
+                "shutting": "Shutting down...",
+                "holding": "Holding power button...",
+                "lost": "Connection lost",
+                "off": "PC is Off",
+                "pcStarting": "PC is Starting",
+                "on": "PC is On",
+                "pcShutting": "PC is Shutting Down",
+                "unknown": "Unknown State",
+                "shutdownTitle": "Shut down the PC?",
+                "shutdownMessage": "Save your work before shutting down the computer.",
+                "forceTitle": "Force power off?",
+                "forceMessage": "The computer will be forced to turn off. Unsaved data may be lost.",
+                "github": "View project on GitHub (opens in a new tab)"
+            },
+            "ru": {
+                "language": "Язык",
+                "author": "от XEGARE",
+                "subtitle": "Удалённое управление питанием",
+                "computerStatus": "Состояние компьютера",
+                "checking": "Проверка...",
+                "start": "Включить ПК",
+                "shutdown": "Выключить",
+                "forceOff": "Выключить принудительно",
+                "settings": "Настройки",
+                "cancel": "Отмена",
+                "starting": "Включение...",
+                "shutting": "Выключение...",
+                "holding": "Удержание кнопки питания...",
+                "lost": "Соединение потеряно",
+                "off": "ПК выключен",
+                "pcStarting": "ПК включается",
+                "on": "ПК включён",
+                "pcShutting": "ПК выключается",
+                "unknown": "Состояние неизвестно",
+                "shutdownTitle": "Выключить компьютер?",
+                "shutdownMessage": "Сохраните свою работу перед выключением компьютера.",
+                "forceTitle": "Выключить принудительно?",
+                "forceMessage": "Питание компьютера будет отключено принудительно. Несохранённые данные могут быть потеряны.",
+                "github": "Открыть проект на GitHub (в новой вкладке)"
+            }
+        }
+        let language = "en"
+        try {
+            if(localStorage.getItem("esp32-pc-language") === "ru") language = "ru"
+        } catch (error) {}
+
+        function Translate(key) {
+            return translations[language][key] || translations.en[key] || key
+        }
+
+        function SetText(element, key) {
+            element.dataset.i18n = key
+            element.textContent = Translate(key)
+        }
+
+        function ApplyLanguage() {
+            document.documentElement.lang = language
+            document.querySelectorAll("[data-i18n]").forEach(element => {
+                element.textContent = Translate(element.dataset.i18n)
+            })
+            document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+                element.setAttribute("aria-label", Translate(element.dataset.i18nAria))
+            })
+            document.querySelectorAll("[data-language]").forEach(button => {
+                button.setAttribute("aria-pressed", String(button.dataset.language === language))
+            })
+        }
+
+        document.querySelectorAll("[data-language]").forEach(button => {
+            button.addEventListener("click", () => {
+                language = button.dataset.language
+                try { localStorage.setItem("esp32-pc-language", language) } catch (error) {}
+                ApplyLanguage()
+            })
+        })
+        ApplyLanguage()
         async function UpdateStatus() {
             try {
                 const statusUrl = new URL("/status", window.location.origin);
@@ -450,17 +572,16 @@ const char *html_index = R"rawliteral(
                 const data = await response.json()
                 document.getElementById("status").className =
                     "status " + data.state
-                document.getElementById("statusText").textContent =
-                    data.stateText
+                const stateKey = { off: "off", starting: "pcStarting", on: "on", shutting: "pcShutting" }[data.state] || "unknown"
+                SetText(document.getElementById("statusText"), stateKey)
             } catch (error) {
-                document.getElementById("statusText").textContent =
-                    "Connection lost"
+                SetText(document.getElementById("statusText"), "lost")
             }
         }
         async function SendCommand(button, url, pendingText) {
-            const original = button.textContent
+            const original = button.dataset.i18n
             button.disabled = true
-            button.textContent = pendingText
+            SetText(button, pendingText)
             try {
                 const requestUrl = new URL(url, window.location.origin);
                 await fetch(requestUrl, { method: "POST" })
@@ -468,7 +589,7 @@ const char *html_index = R"rawliteral(
             } finally {
                 setTimeout(() => {
                     button.disabled = false
-                    button.textContent = original
+                    SetText(button, original)
                 }, 1200)
             }
         }
@@ -479,9 +600,9 @@ const char *html_index = R"rawliteral(
         function OpenConfirmation(button, url, pendingText, title, message, actionText, danger) {
             if(confirmDialog.open || button.disabled) return
             pendingCommand = { button, url, pendingText }
-            document.getElementById("confirmTitle").textContent = title
-            document.getElementById("confirmMessage").textContent = message
-            confirmAction.textContent = actionText
+            SetText(document.getElementById("confirmTitle"), title)
+            SetText(document.getElementById("confirmMessage"), message)
+            SetText(confirmAction, actionText)
             confirmAction.className = danger ? "button danger" : "button primary"
             confirmDialog.showModal()
             document.getElementById("cancelAction").focus()
@@ -513,14 +634,12 @@ const char *html_index = R"rawliteral(
         })
 
         function Shutdown(button) {
-            OpenConfirmation(button, "/off", "Shutting down...",
-                "Shut down the PC?", "Save your work before shutting down the computer.",
-                "Shut down", false)
+            OpenConfirmation(button, "/off", "shutting",
+                "shutdownTitle", "shutdownMessage", "shutdown", false)
         }
         function ForceOff(button) {
-            OpenConfirmation(button, "/forceoff", "Holding power button...",
-                "Force power off?", "The computer will be forced to turn off. Unsaved data may be lost.",
-                "Force power off", true)
+            OpenConfirmation(button, "/forceoff", "holding",
+                "forceTitle", "forceMessage", "forceOff", true)
         }
         setInterval(UpdateStatus, 2000)
         UpdateStatus()
@@ -535,7 +654,7 @@ const char *html_config = R"rawliteral(
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Settings | ESP32 PC Controller</title>
+    <title data-i18n="pageTitle">Settings | ESP32 PC Controller</title>
     <style>
         :root {
             --bg: #090d14;
@@ -638,7 +757,7 @@ const char *html_config = R"rawliteral(
         }
 
         .password input {
-            padding-right: 72px;
+            padding-right: 108px;
         }
 
         .toggle {
@@ -672,7 +791,39 @@ const char *html_config = R"rawliteral(
             cursor: wait;
         }
 
+        .language-switch {
+            display: inline-flex;
+            gap: 2px;
+            padding: 3px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .language-switch button {
+            border: 0;
+            border-radius: 7px;
+            padding: 6px 9px;
+            background: transparent;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .language-switch button[aria-pressed="true"] {
+            background: #27344a;
+            color: var(--text);
+        }
+
+        .language-switch button:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
         .footer {
+            flex-wrap: wrap;
+            gap: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -702,23 +853,20 @@ const char *html_config = R"rawliteral(
                 padding: 22px;
             }
 
-            .footer {
-                align-items: flex-end;
-            }
         }
     </style>
 </head>
 <body>
     <main class="panel">
-        <h1>Controller settings</h1>
-        <div class="subtitle">Network and target computer</div>
+        <h1 data-i18n="heading">Controller settings</h1>
+        <div class="subtitle" data-i18n="subtitle">Network and target computer</div>
         <form id="configForm">
             <div class="field">
-                <label for="ssid">Wi-Fi network</label
+                <label for="ssid" data-i18n="ssid">Wi-Fi network</label
                 ><input id="ssid" name="ssid" maxlength="31" required />
             </div>
             <div class="field">
-                <label for="password">Wi-Fi password</label>
+                <label for="password" data-i18n="password">Wi-Fi password</label>
                 <div class="password">
                     <input
                         type="password"
@@ -729,13 +877,13 @@ const char *html_config = R"rawliteral(
                         class="toggle"
                         type="button"
                         onclick="TogglePassword()"
-                    >
+                     data-i18n="show">
                         Show
                     </button>
                 </div>
             </div>
             <div class="field">
-                <label for="pc_ip">Computer IP address</label
+                <label for="pc_ip" data-i18n="ip">Computer IP address</label
                 ><input
                     id="pc_ip"
                     name="pc_ip"
@@ -745,28 +893,103 @@ const char *html_config = R"rawliteral(
                     required
                 />
             </div>
-            <button id="saveButton" class="save" type="submit">
+            <button id="saveButton" class="save" type="submit" data-i18n="save">
                 Save and restart
             </button>
         </form>
         <div class="footer">
-            <a id="backToControl" href="/">Back to control</a
+            <div class="language-switch" role="group" aria-label="Language" data-i18n-aria="language">
+                <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="true">EN</button>
+                <button type="button" data-language="ru" lang="ru" aria-label="Русский" aria-pressed="false">RU</button>
+            </div>
+            <a id="backToControl" href="/" data-i18n="back">Back to control</a
             ><a
                 class="author"
                 href="https://xegare.com"
                 target="_blank"
                 rel="noopener"
-                >by XEGARE</a
+                 data-i18n="author">by XEGARE</a
             >
         </div>
     </main>
     <script>
+        const translations = {
+            "en": {
+                "language": "Language",
+                "author": "by XEGARE",
+                "pageTitle": "Settings | ESP32 PC Controller",
+                "heading": "Controller settings",
+                "subtitle": "Network and target computer",
+                "ssid": "Wi-Fi network",
+                "password": "Wi-Fi password",
+                "ip": "Computer IP address",
+                "show": "Show",
+                "hide": "Hide",
+                "save": "Save and restart",
+                "back": "Back to control",
+                "saving": "Saving...",
+                "saved": "Saved. Restarting...",
+                "saveError": "Failed to save settings"
+            },
+            "ru": {
+                "language": "Язык",
+                "author": "от XEGARE",
+                "pageTitle": "Настройки | ESP32 PC Controller",
+                "heading": "Настройки контроллера",
+                "subtitle": "Сеть и управляемый компьютер",
+                "ssid": "Сеть Wi-Fi",
+                "password": "Пароль Wi-Fi",
+                "ip": "IP-адрес компьютера",
+                "show": "Показать",
+                "hide": "Скрыть",
+                "save": "Сохранить и перезапустить",
+                "back": "К управлению",
+                "saving": "Сохранение...",
+                "saved": "Сохранено. Перезапуск...",
+                "saveError": "Не удалось сохранить настройки"
+            }
+        }
+        let language = "en"
+        try {
+            if(localStorage.getItem("esp32-pc-language") === "ru") language = "ru"
+        } catch (error) {}
+
+        function Translate(key) {
+            return translations[language][key] || translations.en[key] || key
+        }
+
+        function SetText(element, key) {
+            element.dataset.i18n = key
+            element.textContent = Translate(key)
+        }
+
+        function ApplyLanguage() {
+            document.documentElement.lang = language
+            document.querySelectorAll("[data-i18n]").forEach(element => {
+                element.textContent = Translate(element.dataset.i18n)
+            })
+            document.querySelectorAll("[data-i18n-aria]").forEach(element => {
+                element.setAttribute("aria-label", Translate(element.dataset.i18nAria))
+            })
+            document.querySelectorAll("[data-language]").forEach(button => {
+                button.setAttribute("aria-pressed", String(button.dataset.language === language))
+            })
+        }
+
+        document.querySelectorAll("[data-language]").forEach(button => {
+            button.addEventListener("click", () => {
+                language = button.dataset.language
+                try { localStorage.setItem("esp32-pc-language", language) } catch (error) {}
+                ApplyLanguage()
+            })
+        })
+        ApplyLanguage()
         function TogglePassword() {
             const input = document.getElementById("password")
             const button = document.querySelector(".toggle")
             const visible = input.type === "text"
             input.type = visible ? "password" : "text"
-            button.textContent = visible ? "Show" : "Hide"
+            SetText(button, visible ? "show" : "hide")
         }
         document
             .getElementById("pc_ip")
@@ -795,14 +1018,15 @@ const char *html_config = R"rawliteral(
                 event.preventDefault()
                 const button = document.getElementById("saveButton")
                 button.disabled = true
-                button.textContent = "Saving..."
+                SetText(button, "saving")
                 const saveConfigUrl = new URL("/save_config", window.location.origin);
                 try {
-                    await fetch(saveConfigUrl, {
+                    const response = await fetch(saveConfigUrl, {
                         method: "POST",
                         body: new FormData(event.target)
                     })
-                    button.textContent = "Saved. Restarting..."
+                    if(!response.ok) throw new Error(`HTTP ${response.status}`)
+                    SetText(button, "saved")
 
                     const mainPageUrl = new URL("/", window.location.origin);
                     setTimeout(async () => {
@@ -824,8 +1048,8 @@ const char *html_config = R"rawliteral(
                     }, 2000)
                 } catch (error) {
                     button.disabled = false
-                    button.textContent = "Save and restart"
-                    alert("Failed to save settings")
+                    SetText(button, "save")
+                    alert(Translate("saveError"))
                 }
             })
     </script>
