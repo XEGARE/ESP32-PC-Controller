@@ -129,6 +129,7 @@ const char *html_index = R"rawliteral(
         }
 
         .logo {
+            flex-shrink: 0;
             display: grid;
             place-items: center;
             width: 48px;
@@ -143,6 +144,16 @@ const char *html_index = R"rawliteral(
             font-size: 24px;
             font-weight: 900;
             box-shadow: 0 10px 30px rgba(0, 212, 255, 0.25);
+        }
+
+        .logo:hover {
+            color: #001018;
+            filter: brightness(1.1);
+        }
+
+        .logo:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
         }
 
         h1 {
@@ -367,7 +378,10 @@ const char *html_index = R"rawliteral(
 <body>
     <main class="panel">
         <div class="brand">
-            <div class="logo">PC</div>
+            <a class="logo"
+                href="https://github.com/XEGARE/ESP32-PC-Controller"
+                target="_blank" rel="noopener noreferrer"
+                aria-label="View project on GitHub (opens in a new tab)">PC</a>
             <div>
                 <h1>ESP32 PC Controller</h1>
                 <div class="subtitle">Remote power control</div>
