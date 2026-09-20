@@ -60,7 +60,7 @@ const char *html_index = R"rawliteral(
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>ESP32 PC Controller</title>
+    <title>PC Control</title>
     <style>
         :root {
             --bg: #090d14;
@@ -128,6 +128,15 @@ const char *html_index = R"rawliteral(
             margin-bottom: 30px;
         }
 
+        .brand-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .brand .header-link {
+            margin-left: auto;
+        }
+
         .logo {
             flex-shrink: 0;
             display: grid;
@@ -151,6 +160,33 @@ const char *html_index = R"rawliteral(
         .logo:focus-visible {
             outline: 2px solid var(--accent);
             outline-offset: 4px;
+        }
+
+        .header-link {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            background: rgba(7, 12, 20, 0.3);
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .header-link[hidden] {
+            display: none;
+        }
+
+        .header-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .header-link:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
 
         h1 {
@@ -419,10 +455,18 @@ const char *html_index = R"rawliteral(
                     </g>
                 </svg>
             </a>
-            <div>
-                <h1>ESP32 PC Controller</h1>
+            <div class="brand-copy">
+                <h1>PC Control</h1>
                 <div class="subtitle" data-i18n="subtitle">Remote power control</div>
             </div>
+            <a class="header-link" href="/settings" aria-label="Settings" data-i18n-aria="settings">
+                <svg aria-hidden="true" focusable="false" width="22" height="22"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 3-.5 2.2-1.6.9-2.2-.6-3 5.2 1.7 1.5v1.8l-1.7 1.5 3 5.2 2.2-.6 1.6.9L9 23h6l.5-2.2 1.6-.9 2.2.6 3-5.2-1.7-1.5V12l1.7-1.5-3-5.2-2.2.6-1.6-.9L15 3Z" transform="translate(1.2 .3) scale(.9)" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+            </a>
         </div>
         <section id="status" class="status off">
             <div class="status-copy">
@@ -453,8 +497,7 @@ const char *html_index = R"rawliteral(
                 <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="true">EN</button>
                 <button type="button" data-language="ru" lang="ru" aria-label="Русский" aria-pressed="false">RU</button>
             </div>
-            <a href="/settings" data-i18n="settings">Settings</a
-            ><a
+            <a
                 class="author"
                 href="https://xegare.com"
                 target="_blank"
@@ -474,8 +517,7 @@ const char *html_index = R"rawliteral(
     </dialog>
     <script>
         const translations = {
-            "en": {
-                "language": "Language",
+            "en": {                "language": "Language",
                 "author": "by XEGARE",
                 "subtitle": "Remote power control",
                 "computerStatus": "Computer status",
@@ -500,8 +542,7 @@ const char *html_index = R"rawliteral(
                 "forceMessage": "The computer will be forced to turn off. Unsaved data may be lost.",
                 "github": "View project on GitHub (opens in a new tab)"
             },
-            "ru": {
-                "language": "Язык",
+            "ru": {                "language": "Язык",
                 "author": "от XEGARE",
                 "subtitle": "Удалённое управление питанием",
                 "computerStatus": "Состояние компьютера",
@@ -654,7 +695,7 @@ const char *html_config = R"rawliteral(
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title data-i18n="pageTitle">Settings | ESP32 PC Controller</title>
+    <title data-i18n="pageTitle">Settings | PC Control</title>
     <style>
         :root {
             --bg: #090d14;
@@ -711,6 +752,33 @@ const char *html_config = R"rawliteral(
             box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
         }
 
+        .header-link {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            background: rgba(7, 12, 20, 0.3);
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .header-link[hidden] {
+            display: none;
+        }
+
+        .header-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .header-link:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
         h1 {
             font-size: clamp(22px, 5vw, 28px);
             font-weight: 600;
@@ -721,6 +789,16 @@ const char *html_config = R"rawliteral(
         .subtitle {
             margin: 7px 0 28px;
             color: var(--muted);
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .settings-header h1 {
+            min-width: 0;
         }
 
         .field {
@@ -858,7 +936,17 @@ const char *html_config = R"rawliteral(
 </head>
 <body>
     <main class="panel">
-        <h1 data-i18n="heading">Controller settings</h1>
+        <div class="settings-header">
+            <a id="backToControl" class="header-link" href="/" hidden
+                aria-label="Back to control" data-i18n-aria="back">
+                <svg aria-hidden="true" focusable="false" width="22" height="22"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 5-7 7 7 7M5 12h14" />
+                </svg>
+            </a>
+            <h1 data-i18n="heading">Settings</h1>
+        </div>
         <div class="subtitle" data-i18n="subtitle">Network and target computer</div>
         <form id="configForm">
             <div class="field">
@@ -902,8 +990,7 @@ const char *html_config = R"rawliteral(
                 <button type="button" data-language="en" lang="en" aria-label="English" aria-pressed="true">EN</button>
                 <button type="button" data-language="ru" lang="ru" aria-label="Русский" aria-pressed="false">RU</button>
             </div>
-            <a id="backToControl" href="/" data-i18n="back">Back to control</a
-            ><a
+            <a
                 class="author"
                 href="https://xegare.com"
                 target="_blank"
@@ -917,8 +1004,8 @@ const char *html_config = R"rawliteral(
             "en": {
                 "language": "Language",
                 "author": "by XEGARE",
-                "pageTitle": "Settings | ESP32 PC Controller",
-                "heading": "Controller settings",
+                "pageTitle": "Settings | PC Control",
+                "heading": "Settings",
                 "subtitle": "Network and target computer",
                 "ssid": "Wi-Fi network",
                 "password": "Wi-Fi password",
@@ -934,8 +1021,8 @@ const char *html_config = R"rawliteral(
             "ru": {
                 "language": "Язык",
                 "author": "от XEGARE",
-                "pageTitle": "Настройки | ESP32 PC Controller",
-                "heading": "Настройки контроллера",
+                "pageTitle": "Настройки | PC Control",
+                "heading": "Настройки",
                 "subtitle": "Сеть и управляемый компьютер",
                 "ssid": "Сеть Wi-Fi",
                 "password": "Пароль Wi-Fi",
