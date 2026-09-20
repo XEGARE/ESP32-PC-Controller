@@ -4,7 +4,7 @@
 
 Контроллер удалённого управления питанием ПК на базе ESP32-C3 Super Mini с веб-интерфейсом, HTTP API, порталом настройки Wi-Fi и отслеживанием состояния компьютера.
 
-<img width="763" height="553" alt="Веб-интерфейс управления ПК" src="https://github.com/user-attachments/assets/d256c643-2d91-406c-ab39-74c4bb2e8dda" />
+<img width="908" height="569" alt="1789894904" src="https://github.com/user-attachments/assets/171e0801-e195-4d86-8a75-3e0893b5e4fe" />
 
 ## Возможности
 
@@ -63,7 +63,7 @@ Password: password123
 
 Если портал настройки не открылся автоматически, перейдите по адресу [http://192.168.4.1](http://192.168.4.1).
 
-<img width="829" height="636" alt="Страница настроек контроллера" src="https://github.com/user-attachments/assets/e858100c-4405-4462-870f-193292434c9e" />
+<img width="995" height="677" alt="1789894945" src="https://github.com/user-attachments/assets/539e20fd-a25b-4edf-aa8f-656294816da3" />
 
 Укажите следующие данные:
 
