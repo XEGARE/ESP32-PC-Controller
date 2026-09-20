@@ -134,21 +134,18 @@ const char *html_index = R"rawliteral(
             place-items: center;
             width: 48px;
             height: 48px;
+            border: 1px solid rgba(0, 212, 255, 0.22);
             border-radius: 14px;
-            background: linear-gradient(
-                135deg,
-                var(--accent),
-                var(--accent2)
-            );
-            color: #001018;
-            font-size: 24px;
-            font-weight: 900;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.25);
+            background: linear-gradient(145deg, #173044, #0c1725);
+            color: #dceef7;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: border-color 0.2s, background 0.2s;
         }
 
         .logo:hover {
-            color: #001018;
-            filter: brightness(1.1);
+            color: #fff;
+            border-color: var(--accent);
+            background: #173044;
         }
 
         .logo:focus-visible {
@@ -381,7 +378,18 @@ const char *html_index = R"rawliteral(
             <a class="logo"
                 href="https://github.com/XEGARE/ESP32-PC-Controller"
                 target="_blank" rel="noopener noreferrer"
-                aria-label="View project on GitHub (opens in a new tab)">PC</a>
+                aria-label="View project on GitHub (opens in a new tab)">
+                <svg aria-hidden="true" focusable="false" width="32" height="32"
+                    viewBox="0 0 32 32" fill="none" stroke="currentColor"
+                    stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="26" height="19" rx="3" />
+                    <path d="M16 23v5m-6 0h12" />
+                    <g stroke="var(--accent)">
+                        <path d="M16 8v5" />
+                        <path d="M12.5 10.5a5 5 0 1 0 7 0" />
+                    </g>
+                </svg>
+            </a>
             <div>
                 <h1>ESP32 PC Controller</h1>
                 <div class="subtitle">Remote power control</div>
