@@ -193,7 +193,6 @@ const char *html_index = R"rawliteral(
             font-size: clamp(22px, 5vw, 30px);
             font-weight: 600;
             line-height: 1.2;
-            letter-spacing: -0.025em;
         }
 
         .subtitle {
@@ -320,7 +319,6 @@ const char *html_index = R"rawliteral(
             font-size: 22px;
             font-weight: 600;
             line-height: 1.3;
-            letter-spacing: -0.025em;
         }
 
         .confirmation p {
@@ -783,7 +781,6 @@ const char *html_config = R"rawliteral(
             font-size: clamp(22px, 5vw, 28px);
             font-weight: 600;
             line-height: 1.2;
-            letter-spacing: -0.025em;
         }
 
         .subtitle {
